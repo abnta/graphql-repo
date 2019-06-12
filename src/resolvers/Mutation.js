@@ -17,7 +17,7 @@ const Mutation = {
         db.users.push(user)
         return user
     },
-    deleteUser(parent,args,ctx,info){
+    deleteUser(parent,args,{db},info){
         const userIndex = db.users.findIndex((user)=>{
             return user.id === args.id
         })
@@ -46,7 +46,37 @@ const Mutation = {
         return deletedUsers[0]
         
     },
-    createPost(parent,args,ctx,info){
+    updateUser(parent,args,{db},info){
+        const user = db.users.find((user)=>{
+            return user.id === args.id
+        })
+
+        if(!user){
+            throw new Error('Usr not found')
+        }
+
+        if(typeof args.data.email === 'string'){
+            const emailTaken = db.users.some((user)=>{
+                return user.email === args.data.email
+            })
+
+            if(emailTaken){
+                throw new Error ('Email Taken')
+            }
+            user.email = args.data.email   
+        }
+
+        if(typeof args.data.name === 'string'){
+            user.name = args.data.name
+        }
+
+        if(typeof args.data.age !== 'undefined'){
+            user.age = args.data.age
+        }
+
+        return user
+    },
+    createPost(parent,args,{db},info){
         const userExists = db.users.some((user)=>{
             return user.id == args.data.author
         })

@@ -77,4 +77,4 @@ const db = {
     comments
 }
 
-export {db as defalult}
+export {db as default}
